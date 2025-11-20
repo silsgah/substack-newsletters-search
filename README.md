@@ -6,10 +6,10 @@
 
 <!-- Project Status -->
 
-[![Build Status](https://github.com/benitomartin/substack-newsletters-search-course/actions/workflows/ci.yml/badge.svg)](https://github.com/benitomartin/substack-newsletters-search-course/actions/workflows/ci.yml)
-[![Build Status](https://github.com/benitomartin/substack-newsletters-search-course/actions/workflows/cd.yml/badge.svg)](https://github.com/benitomartin/substack-newsletters-search-course/actions/workflows/cd.yml)
+[![Build Status](https://github.com/silsgah/substack-newsletters-search/actions/workflows/ci.yml/badge.svg)](https://github.com/silsgah/substack-newsletters-search/actions/workflows/ci.yml)
+[![Build Status](https://github.com/silsgah/substack-newsletters-search/actions/workflows/cd.yml/badge.svg)](https://github.com/silsgah/substack-newsletters-search/actions/workflows/cd.yml)
 ![Status](https://img.shields.io/badge/status-active-success.svg)
-![GitHub release (latest by date)](https://img.shields.io/github/v/release/benitomartin/substack-newsletters-search-course)
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/silsgah/substack-newsletters-search)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python version](https://img.shields.io/badge/python-3.12.8-blue.svg)](https://www.python.org/downloads/)
 [![uv](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/uv/main/assets/badge/v0.json)](https://github.com/astral-sh/uv)
@@ -33,7 +33,8 @@
 
 - [Substack Articles Search Engine](#substack-articles-search-engine)
   - [📚 Table of Contents](#-table-of-contents)
-  - [🙂 Contributors](#-contributors)
+  - [👤 Author](#-author)
+  - [🙏 Acknowledgments](#-acknowledgments)
   - [🎯 Why Take This Course?](#-why-take-this-course)
   - [👥 Who Is This Course For?](#-who-is-this-course-for)
   - [🧑‍🎓 What You Will Learn](#-what-you-will-learn)
@@ -44,28 +45,24 @@
   - [🔌 Services Providers](#-services-providers)
   - [🪪 License](#-license)
   
-## 🙂 Contributors
+## 👤 Author
 
-<table>
-  <tr>
-    <td align="center"><img src="https://github.com/benitomartin.png" width="100" style="border-radius:50%;"/></td>
-    <td>
-      <strong>Benito Martin | AI / ML Engineer </strong><br />
-      <a href="https://www.linkedin.com/in/benitomartin/">LinkedIn</a><br />
-      <a href="https://aiechoes.substack.com/">AI Echoes Newsletter</a><br />
-    </td>
-  </tr>
-  <tr>
-    <td align="center"><img src="https://github.com/MichaelisTrofficus.png" width="100" style="border-radius:50%;"/></td>
-    <td>
-      <strong>Miguel Otero Pedrido | AI / ML Engineer </strong><br />
-      <a href="https://www.linkedin.com/in/migueloteropedrido/">LinkedIn</a><br />
-      <a href="https://www.youtube.com/@TheNeuralMaze">YouTube</a><br />
-      <a href="https://theneuralmaze.substack.com/">The Neural Maze Newsletter</a>
-    </td>
-  </tr>
+**Silas Kwabla Gah** | ML Engineer
 
-</table>
+- 🔗 [LinkedIn](https://www.linkedin.com/in/silas-gah-46b126294)
+- 🐙 [GitHub](https://github.com/silsgah)
+- 📧 Email: gahsilas@gmail.com
+
+---
+
+## 🙏 Acknowledgments
+
+This project is based on the excellent course created by:
+
+- **Benito Martin** - [LinkedIn](https://www.linkedin.com/in/benitomartin/) | [AI Echoes Newsletter](https://aiechoes.substack.com/)
+- **Miguel Otero Pedrido** - [LinkedIn](https://www.linkedin.com/in/migueloteropedrido/) | [YouTube](https://www.youtube.com/@TheNeuralMaze) | [The Neural Maze Newsletter](https://theneuralmaze.substack.com/)
+
+Their comprehensive course materials provided the foundation for this implementation.
 
 ## 🎯 Why Take This Course?
 
