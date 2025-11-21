@@ -4,37 +4,15 @@
 
 <div align="center">
 
-<!-- Project Status -->
-
-[![Build Status](https://github.com/silsgah/substack-newsletters-search/actions/workflows/ci.yml/badge.svg)](https://github.com/silsgah/substack-newsletters-search/actions/workflows/ci.yml)
-[![Build Status](https://github.com/silsgah/substack-newsletters-search/actions/workflows/cd.yml/badge.svg)](https://github.com/silsgah/substack-newsletters-search/actions/workflows/cd.yml)
-![Status](https://img.shields.io/badge/status-active-success.svg)
-![GitHub release (latest by date)](https://img.shields.io/github/v/release/silsgah/substack-newsletters-search)
+[![Status](https://img.shields.io/badge/status-active-success.svg)]
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Python version](https://img.shields.io/badge/python-3.12.8-blue.svg)](https://www.python.org/downloads/)
-[![uv](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/uv/main/assets/badge/v0.json)](https://github.com/astral-sh/uv)
-
-<!-- Providers -->
-
+[![Python version](https://img.shields.io/badge/python-3.12-3670A0.svg)](https://www.python.org/)
 [![Supabase](https://img.shields.io/badge/Supabase-2.18.1-3ECF8E?logo=supabase&logoColor=white)](https://supabase.com/)
 [![Qdrant](https://img.shields.io/badge/Qdrant-1.15.1-5A31F4?logo=qdrant&logoColor=white)](https://qdrant.tech/)
 [![Cloud Run](https://img.shields.io/badge/Google%20Cloud%20Run-4285F4?logo=googlecloud&logoColor=white)](https://cloud.google.com/run)
 [![Prefect](https://img.shields.io/badge/Prefect-3.4.17-FF4300?logo=prefect&logoColor=white)](https://www.prefect.io/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.116.1-009688?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
 [![Gradio](https://img.shields.io/badge/Gradio-5.45.0-FF4B4B?logo=gradio&logoColor=white)](https://gradio.app/)
-
-</div>
-
-# Substack Articles Search Engine
-
-![Diagram](static/app_diagram.png)
-
-<div align="center">
-
-[![Status](https://img.shields.io/badge/status-active-success.svg)]
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Python version](https://img.shields.io/badge/python-3.12-3670A0.svg)](https://www.python.org/)
-
 </div>
 
 A production-ready Retrieval-Augmented Generation (RAG) project that lets you index, search, and answer questions over Substack (RSS) newsletter articles using semantic search and LLMs.
@@ -157,13 +135,5 @@ Recommended workflow:
 This project is licensed under the MIT License — see the `LICENSE` file for details.
 
 ---
-
-If you'd like, I can also:
-
-- Extract a short, one-paragraph elevator pitch for the repo.
-- Create a compact `README_LITE.md` for GitHub's main page.
-- Add a small architecture diagram or ASCII overview.
-
-Tell me which of the above you'd prefer next.
 
 
