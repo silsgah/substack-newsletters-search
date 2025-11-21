@@ -123,6 +123,10 @@ python -m src.pipelines.flows.rss_ingestion_flow
 # run embeddings ingestion
 python -m src.pipelines.flows.embeddings_ingestion_flow
 ```
+
+## 📁 Project Structure
+
+```
 substack-newsletters-search-pipeline/
 ├── .env.example                 # Environment variables template
 ├── .github/                     # GitHub configuration and CI/CD workflows
@@ -158,6 +162,10 @@ substack-newsletters-search-pipeline/
     ├── conftest.py              # Pytest configuration
     ├── integration/             # Integration tests (DB, pipeline)
     └── unit/                    # Unit tests
+```
+
+---
+
 ## Deployment
 
 This project includes deployment resources for containerized deployment (Cloud Run):
