@@ -597,27 +597,6 @@ open htmlcov/index.html
 
 ---
 
-## 🤝 Contributing
-
-Contributions are welcome! Please follow these guidelines:
-
-1. **Fork the repository**
-2. **Create a feature branch**: `git checkout -b feature/your-feature`
-3. **Write tests** for new functionality
-4. **Ensure tests pass**: `make test`
-5. **Format code**: `make format`
-6. **Commit changes**: `git commit -m "Add your feature"`
-7. **Push to branch**: `git push origin feature/your-feature`
-8. **Open a Pull Request**
-
-### Development Workflow
-
-- Follow existing code structure and patterns
-- Maintain test coverage above 80%
-- Update documentation for API changes
-- Add type hints to all functions
-- Use descriptive commit messages
-
 ---
 
 ## 📄 License
@@ -635,12 +614,40 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ---
 
-## 📞 Support
+## 📞 Contact
 
-- **Issues**: [GitHub Issues](https://github.com/yourusername/substack-newsletters-search/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/yourusername/substack-newsletters-search/discussions)
-- **Documentation**: See `docs/` directory for detailed guides
+- **Author**: Silas Kwabla Gah
+- **GitHub**: [@silsgah](https://github.com/silsgah)
+- **LinkedIn**: [Silas Gah](https://www.linkedin.com/in/silas-gah-46b126294)
+- **Email**: gahsilas@gmail.com
 
 ---
+
+**⭐ If you found this project helpful, please star the repository!**
+
+---
+
+## 🎓 Learning Resources
+
+**Key Concepts Demonstrated:**
+- RAG system architecture and implementation
+- LLM fine-tuning (SFT + DPO)
+- Vector database integration
+- MLOps best practices
+- Microservices architecture
+- CI/CD for ML systems
+- Production deployment strategies
+- Monitoring and observability
+
+**Skills Showcased:**
+- Python (FastAPI, Poetry, type hints)
+- Machine Learning (transformers, sentence-transformers)
+- MLOps (ZenML, Docker, CI/CD)
+- Cloud Infrastructure (AWS, Docker)
+- Database Design (MongoDB, Qdrant)
+- API Design (REST, async)
+- Frontend Development (Next.js)
+- System Architecture
+
 
 *Last Updated: November 2025*
