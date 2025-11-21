@@ -1,7 +1,6 @@
 # Substack Articles Search Engine
 
-![System Architecture Diagram](architectureDiagram.png)
-
+![System Architecture Diagram](substacknewsletter.png)
 <div align="center">
 
 [![Status](https://img.shields.io/badge/status-active-success.svg)]
