@@ -13,11 +13,6 @@ A production-ready Retrieval-Augmented Generation (RAG) project that lets you in
 
 This repository contains a complete backend for ingestion, indexing, search, and answer generation. It is designed for developers and teams who want a working RAG stack with real-world integrations (Qdrant, Supabase, Prefect, FastAPI) and multi-provider LLM support.
 
-**Goals:**
-- Provide a robust pipeline to ingest and store newsletter articles.
-- Generate and index embeddings for semantic search.
-- Offer REST APIs and an optional Gradio UI for search and question answering.
-- Support multiple LLM providers and streaming/non-streaming responses.
 
 **Quick links:**
 - FastAPI entry: `src/api/main.py`
@@ -30,28 +25,14 @@ This repository contains a complete backend for ingestion, indexing, search, and
 
 This is a **full-stack, production-grade AI system** that demonstrates:
 
-- ✅ **Complete ML Pipeline**: From raw data ingestion to production deployment
-- ✅ **Advanced RAG Implementation**: Query expansion, self-querying, and cross-encoder reranking
-- ✅ **Custom LLM Fine-Tuning**: Supervised Fine-Tuning (SFT) + Direct Preference Optimization (DPO)
-- ✅ **Production Infrastructure**: Microservices architecture with separate RAG and inference services
-- ✅ **Multi-Cloud Deployment**: AWS SageMaker, RunPod, and Render.com support
+- ✅ **Complete ML Pipeline**: Provide a robust pipeline to ingest and store newsletter articles.
+- ✅ **Advanced RAG Implementation**: Generate and index embeddings for semantic search.
+- ✅ **Custom LLM Fine-Tuning**: Offer REST APIs and an optional Gradio UI for search and question answering.
+- ✅ **Production Infrastructure**: Support multiple LLM providers and streaming/non-streaming responses.
+- ✅ **Multi-Cloud LLM Agent**: AWS SageMaker, RunPod, and Render.com support
 - ✅ **Full Observability**: Experiment tracking (Comet ML) and prompt monitoring (Opik)
 - ✅ **Clean Architecture**: Domain-Driven Design with ~6,000 lines of well-structured code
 - ✅ **CI/CD Pipeline**: Automated testing, linting, and deployment workflows
-
----
-
-## 📋 Table of Contents
-
-- [Features](#-features)
-- [Architecture](#-architecture)
-- [Quick Start](#-quick-start)
-- [Project Structure](#-project-structure)
-- [Usage](#-usage)
-- [Deployment](#-deployment)
-- [Configuration](#-configuration)
-- [Documentation](#-documentation)
-
 ---
 ## Table of Contents
 
@@ -142,7 +123,41 @@ python -m src.pipelines.flows.rss_ingestion_flow
 # run embeddings ingestion
 python -m src.pipelines.flows.embeddings_ingestion_flow
 ```
-
+substack-newsletters-search-pipeline/
+├── .env.example                 # Environment variables template
+├── .github/                     # GitHub configuration and CI/CD workflows
+├── Dockerfile                   # Dockerfile for FastAPI app
+├── Makefile                     # Automation commands
+├── README.md                    # Project Readme
+├── cloudbuild_fastapi.yaml      # Google Cloud Build config for FastAPI
+├── deploy_fastapi.sh            # Script to deploy FastAPI to Cloud Run
+├── prefect-cloud.yaml           # Prefect Cloud deployment
+├── prefect-local.yaml           # Prefect local deployment
+├── pyproject.toml               # Python dependencies
+├── requirements.txt             # Prefect deployment deps
+├── frontend/                    # Gradio UI
+├── src/
+│   ├── api/                     # FastAPI application
+│   │   ├── exceptions/          # Error handlers
+│   │   ├── middleware/          # Logging middleware
+│   │   ├── models/              # API schemas
+│   │   ├── routes/              # Endpoint definitions
+│   │   ├── services/            # Business logic
+│   │   └── main.py              # App entry point
+│   ├── config.py                # Centralized settings
+│   ├── configs/                 # Newsletter sources
+│   ├── models/                  # Pydantic/SQLAlchemy models
+│   ├── infrastructure/          # Infrastructure integrations
+│   │   ├── supabase/            # Database setup
+│   │   └── qdrant/              # Vector store setup
+│   ├── pipelines/               # Prefect flows and tasks
+│   │   ├── flows/               # Prefect workflows
+│   │   └── tasks/               # Prefect tasks
+│   └── utils/                   # Logging and text splitter utils
+└── tests/                       # Tests
+    ├── conftest.py              # Pytest configuration
+    ├── integration/             # Integration tests (DB, pipeline)
+    └── unit/                    # Unit tests
 ## Deployment
 
 This project includes deployment resources for containerized deployment (Cloud Run):
