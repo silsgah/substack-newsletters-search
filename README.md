@@ -7,12 +7,7 @@
 [![Status](https://img.shields.io/badge/status-active-success.svg)]
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python version](https://img.shields.io/badge/python-3.12-3670A0.svg)](https://www.python.org/)
-[![Supabase](https://img.shields.io/badge/Supabase-2.18.1-3ECF8E?logo=supabase&logoColor=white)](https://supabase.com/)
-[![Qdrant](https://img.shields.io/badge/Qdrant-1.15.1-5A31F4?logo=qdrant&logoColor=white)](https://qdrant.tech/)
-[![Cloud Run](https://img.shields.io/badge/Google%20Cloud%20Run-4285F4?logo=googlecloud&logoColor=white)](https://cloud.google.com/run)
-[![Prefect](https://img.shields.io/badge/Prefect-3.4.17-FF4300?logo=prefect&logoColor=white)](https://www.prefect.io/)
-[![FastAPI](https://img.shields.io/badge/FastAPI-0.116.1-009688?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
-[![Gradio](https://img.shields.io/badge/Gradio-5.45.0-FF4B4B?logo=gradio&logoColor=white)](https://gradio.app/)
+
 </div>
 
 A production-ready Retrieval-Augmented Generation (RAG) project that lets you index, search, and answer questions over Substack (RSS) newsletter articles using semantic search and LLMs.
@@ -64,6 +59,24 @@ Use cases: personal newsletter search, knowledge bases built from newsletters, r
 - **Generation**: `src/api/services/generation_service.py` constructs prompts and calls LLM providers (OpenRouter, OpenAI, Hugging Face) with streaming support.
 - **API**: FastAPI app in `src/api/main.py` exposes `/search` and health endpoints and manages lifecycle (vectorstore init).
 - **UI**: Optional Gradio interface in `frontend/` for interactive demos.
+
+## Features
+
+- **RSS Ingestion (Prefect):** Uses Prefect flows and tasks under `src/pipelines/flows/` and `src/pipelines/tasks/` to fetch and process Substack/RSS feeds.
+- **Persistent Storage:** Stores article records and metadata in Supabase/Postgres via `src/infrastructure/supabase/`.
+- **Text Splitting:** Splits long articles into searchable chunks (see `src/utils/text_splitter.py`).
+- **Embeddings & Indexing:** Generates embeddings and ingests them into Qdrant with payload metadata using flows in `src/pipelines/flows/`.
+- **Qdrant Vectorstore:** Async Qdrant client and collection helpers in `src/infrastructure/qdrant/` with payload indexes for efficient filtering.
+- **Hybrid Retrieval:** Performs hybrid dense + sparse retrieval with RRF fusion, prefetching and filter support in `src/api/services/search_service.py`.
+- **Deduplication Strategies:** Deduplicates search results by point id and/or article title to return unique results.
+- **Multi-provider LLM Generation:** Supports OpenRouter, OpenAI and Hugging Face providers, including streaming and non-streaming modes (`src/api/services/generation_service.py` and `src/api/services/providers/`).
+- **Model Registry & Config:** Centralized model configuration to select providers/models at runtime.
+- **Evaluation & Tracking:** Built-in evaluation helpers and Opik instrumentation for metrics and faithfulness checks (`src/api/services/providers/utils/`).
+- **FastAPI Backend:** Async FastAPI app in `src/api/main.py` with lifespan init, CORS, logging middleware, and robust exception handlers.
+- **Observability & Logging:** Structured logging via `src/utils/logger_util.py` and request logging middleware.
+- **Dev & Deployment Ready:** Dockerfile, `cloudbuild_fastapi.yaml`, and `deploy_fastapi.sh` for containerized deployment (Cloud Run); CI/CD workflows referenced in README.
+- **Tests:** Unit and integration tests under `tests/` to validate ingestion, API behavior, and DB integrations.
+- **Extensible Design:** Modular provider implementations and a clear separation between ingestion, indexing, search, and generation, making it straightforward to extend providers or storage backends.
 
 ## Getting Started
 
@@ -135,5 +148,3 @@ Recommended workflow:
 This project is licensed under the MIT License — see the `LICENSE` file for details.
 
 ---
-
-
