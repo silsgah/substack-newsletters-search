@@ -1,6 +1,6 @@
 # Substack Articles Search Engine
 
-
+![System Architecture Diagram](architectureDiagram.png)
 
 <div align="center">
 
