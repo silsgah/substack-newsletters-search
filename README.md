@@ -1,199 +1,646 @@
-# Substack Articles Search Engine
+# Substack Newsletter Search Engine
 
-![System Architecture Diagram](substacknewsletter.png)
 <div align="center">
 
-[![Status](https://img.shields.io/badge/status-active-success.svg)]
+![System Architecture](substacknewsletter.png)
+
+[![Status](https://img.shields.io/badge/status-active-success.svg)]()
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Python version](https://img.shields.io/badge/python-3.12-3670A0.svg)](https://www.python.org/)
+[![Python 3.12](https://img.shields.io/badge/python-3.12-3670A0.svg)](https://www.python.org/)
+
+**Production-grade semantic search and question-answering system for Substack newsletters**
+
+[Features](#-features) • [Architecture](#-architecture) • [Quick Start](#-quick-start) • [Deployment](#-deployment) • [API Docs](#-api-reference)
 
 </div>
 
-A production-ready Retrieval-Augmented Generation (RAG) project that lets you index, search, and answer questions over Substack (RSS) newsletter articles using semantic search and LLMs.
-
-This repository contains a complete backend for ingestion, indexing, search, and answer generation. It is designed for developers and teams who want a working RAG stack with real-world integrations (Qdrant, Supabase, Prefect, FastAPI) and multi-provider LLM support.
-
-
-**Quick links:**
-- FastAPI entry: `src/api/main.py`
-- Search logic: `src/api/services/search_service.py`
-- Generation: `src/api/services/generation_service.py`
-- Ingestion & pipelines: `src/pipelines/`
-- Qdrant wrapper: `src/infrastructure/qdrant/qdrant_vectorstore.py`
-
-## 🎯 Project Highlights
-
-This is a **full-stack, production-grade AI system** that demonstrates:
-
-- ✅ **Complete ML Pipeline**: Provide a robust pipeline to ingest and store newsletter articles.
-- ✅ **Advanced RAG Implementation**: Generate and index embeddings for semantic search.
-- ✅ **Custom LLM Fine-Tuning**: Offer REST APIs and an optional Gradio UI for search and question answering.
-- ✅ **Production Infrastructure**: Support multiple LLM providers and streaming/non-streaming responses.
-- ✅ **Multi-Cloud LLM Agent**: AWS SageMaker, RunPod, and Render.com support
-- ✅ **Full Observability**: Experiment tracking (Comet ML) and prompt monitoring (Opik)
-- ✅ **Clean Architecture**: Domain-Driven Design with ~6,000 lines of well-structured code
-- ✅ **CI/CD Pipeline**: Automated testing, linting, and deployment workflows
 ---
-## Table of Contents
 
-- **Overview**
-- **Architecture & Components**
-- **Getting Started**
-- **Running Locally**
-- **Deployment**
-- **Integrations**
-- **Contributing**
-- **License**
+## 🎯 Overview
 
-## Overview
+A complete **Retrieval-Augmented Generation (RAG)** system that indexes, searches, and generates answers from Substack newsletter articles using state-of-the-art semantic search and LLMs. Built for production with real-world integrations, multi-provider LLM support, and comprehensive observability.
 
-This project is an application (not a course). It implements a full RAG stack to:
+### Key Capabilities
 
-- Fetch articles from RSS/Substack feeds.
-- Persist raw articles to Postgres (Supabase).
-- Split content into chunks and produce embeddings.
-- Store embeddings and metadata in Qdrant for fast vector search.
-- Expose search endpoints and generate answers using LLMs.
+- **🔍 Semantic Search**: Dense + sparse hybrid retrieval with reciprocal rank fusion
+- **💬 Question Answering**: Multi-provider LLM support with streaming responses
+- **📰 Automated Ingestion**: RSS feed monitoring and article processing pipelines
+- **🎯 Production Ready**: Full observability, CI/CD, and cloud deployment configs
+- **🔧 Extensible**: Modular architecture supporting custom providers and backends
 
-Use cases: personal newsletter search, knowledge bases built from newsletters, research assistants over Substack content, and demo apps for RAG architectures.
+### Use Cases
 
-## Architecture & Components
+- Personal newsletter knowledge bases
+- Research assistants for Substack content
+- Enterprise newsletter aggregation and search
+- Demo applications for RAG architectures
 
-- **Ingestion**: Prefect flows in `src/pipelines/flows/` and tasks in `src/pipelines/tasks/` fetch RSS feeds, parse articles, and store them.
-- **Storage**: Article metadata is stored in Supabase/Postgres (`src/infrastructure/supabase/`).
-- **Vector Index**: Qdrant is used to store embeddings and payloads; client wrapper in `src/infrastructure/qdrant/`.
-- **Search**: `src/api/services/search_service.py` performs hybrid dense + sparse queries, filtering and deduplication.
-- **Generation**: `src/api/services/generation_service.py` constructs prompts and calls LLM providers (OpenRouter, OpenAI, Hugging Face) with streaming support.
-- **API**: FastAPI app in `src/api/main.py` exposes `/search` and health endpoints and manages lifecycle (vectorstore init).
-- **UI**: Optional Gradio interface in `frontend/` for interactive demos.
+---
 
-## Features
+## ✨ Features
 
-- **RSS Ingestion (Prefect):** Uses Prefect flows and tasks under `src/pipelines/flows/` and `src/pipelines/tasks/` to fetch and process Substack/RSS feeds.
-- **Persistent Storage:** Stores article records and metadata in Supabase/Postgres via `src/infrastructure/supabase/`.
-- **Text Splitting:** Splits long articles into searchable chunks (see `src/utils/text_splitter.py`).
-- **Embeddings & Indexing:** Generates embeddings and ingests them into Qdrant with payload metadata using flows in `src/pipelines/flows/`.
-- **Qdrant Vectorstore:** Async Qdrant client and collection helpers in `src/infrastructure/qdrant/` with payload indexes for efficient filtering.
-- **Hybrid Retrieval:** Performs hybrid dense + sparse retrieval with RRF fusion, prefetching and filter support in `src/api/services/search_service.py`.
-- **Deduplication Strategies:** Deduplicates search results by point id and/or article title to return unique results.
-- **Multi-provider LLM Generation:** Supports OpenRouter, OpenAI and Hugging Face providers, including streaming and non-streaming modes (`src/api/services/generation_service.py` and `src/api/services/providers/`).
-- **Model Registry & Config:** Centralized model configuration to select providers/models at runtime.
-- **Evaluation & Tracking:** Built-in evaluation helpers and Opik instrumentation for metrics and faithfulness checks (`src/api/services/providers/utils/`).
-- **FastAPI Backend:** Async FastAPI app in `src/api/main.py` with lifespan init, CORS, logging middleware, and robust exception handlers.
-- **Observability & Logging:** Structured logging via `src/utils/logger_util.py` and request logging middleware.
-- **Dev & Deployment Ready:** Dockerfile, `cloudbuild_fastapi.yaml`, and `deploy_fastapi.sh` for containerized deployment (Cloud Run); CI/CD workflows referenced in README.
-- **Tests:** Unit and integration tests under `tests/` to validate ingestion, API behavior, and DB integrations.
-- **Extensible Design:** Modular provider implementations and a clear separation between ingestion, indexing, search, and generation, making it straightforward to extend providers or storage backends.
+### Data Pipeline
+- **RSS Ingestion**: Orchestrated Prefect flows for feed monitoring and article extraction
+- **Intelligent Chunking**: Semantic text splitting optimized for newsletter content
+- **Persistent Storage**: Supabase/PostgreSQL for article metadata and full-text
+- **Embedding Generation**: Batch processing with rate limiting and retry logic
 
-## Getting Started
+### Search & Retrieval
+- **Hybrid Search**: Dense vector + sparse BM25 with RRF fusion
+- **Smart Deduplication**: Point ID and title-based result deduplication
+- **Advanced Filtering**: Temporal, author, and metadata-based filtering
+- **Result Ranking**: Configurable score normalization and reranking
 
-Prerequisites:
+### LLM Integration
+- **Multi-Provider Support**: OpenRouter, OpenAI, Hugging Face
+- **Streaming & Batch**: SSE streaming for real-time responses
+- **Context Management**: Automatic prompt optimization and truncation
+- **Evaluation**: Built-in faithfulness and relevance metrics (Opik)
 
-- Python 3.10+ (project lists 3.12 in badges)
-- Qdrant instance (local or hosted)
-- Supabase project or Postgres instance
-- API keys for chosen LLM providers (OpenRouter/OpenAI/Hugging Face)
+### Infrastructure
+- **Vector Store**: Qdrant with optimized payload indexing
+- **Database**: Supabase with full-text search capabilities
+- **Orchestration**: Prefect for workflow management
+- **Observability**: Structured logging, request tracing, Comet ML tracking
 
-Quick setup (zsh):
+### API & UI
+- **FastAPI Backend**: Async endpoints with automatic OpenAPI docs
+- **Gradio Interface**: Interactive demo UI for testing
+- **CORS Support**: Configurable cross-origin policies
+- **Health Checks**: Comprehensive system status endpoints
 
+---
+
+## 🏗️ Architecture
+```
+┌─────────────┐      ┌──────────────┐      ┌─────────────┐
+│ RSS Feeds   │─────▶│   Prefect    │─────▶│  Supabase   │
+│ (Substack)  │      │  Pipelines   │      │  (Postgres) │
+└─────────────┘      └──────────────┘      └─────────────┘
+                            │                      │
+                            ▼                      ▼
+                     ┌──────────────┐      ┌─────────────┐
+                     │  Embeddings  │─────▶│   Qdrant    │
+                     │  Generation  │      │  VectorDB   │
+                     └──────────────┘      └─────────────┘
+                                                   │
+                                                   ▼
+┌─────────────┐      ┌──────────────┐      ┌─────────────┐
+│   Client    │◀────▶│   FastAPI    │◀────▶│  Search     │
+│  (Gradio)   │      │   Backend    │      │  Service    │
+└─────────────┘      └──────────────┘      └─────────────┘
+                            │
+                            ▼
+                     ┌──────────────┐
+                     │ LLM Provider │
+                     │ (OpenRouter/ │
+                     │  OpenAI/HF)  │
+                     └──────────────┘
+```
+
+### Component Overview
+
+| Component | Technology | Purpose |
+|-----------|-----------|---------|
+| **Ingestion** | Prefect | Orchestrated RSS processing and ETL |
+| **Storage** | Supabase/Postgres | Article metadata and full-text |
+| **Vector Index** | Qdrant | Semantic search and embeddings |
+| **Search** | Custom Service | Hybrid retrieval with deduplication |
+| **Generation** | Multi-provider | LLM-powered answer generation |
+| **API** | FastAPI | RESTful endpoints and lifecycle management |
+| **UI** | Gradio | Interactive demo interface |
+
+---
+
+## 🚀 Quick Start
+
+### Prerequisites
+
+- Python 3.10+ (recommended 3.12)
+- Qdrant instance (local or cloud)
+- Supabase project or PostgreSQL database
+- LLM provider API keys (OpenRouter/OpenAI/Hugging Face)
+
+### Installation
 ```bash
+# Clone repository
+git clone https://github.com/yourusername/substack-newsletters-search.git
+cd substack-newsletters-search
+
+# Create virtual environment
 python -m venv .venv
-source .venv/bin/activate
+source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+
+# Install dependencies
 pip install -r requirements.txt
-cp .env.example .env   # and fill with your credentials
+
+# Configure environment
+cp .env.example .env
+# Edit .env with your credentials
 ```
 
-Start the API (development):
+### Environment Configuration
 
+Required environment variables:
 ```bash
-uvicorn "src.api.main:app" --reload --port 8080
+# Database
+SUPABASE_URL=your_supabase_url
+SUPABASE_KEY=your_supabase_key
+
+# Vector Store
+QDRANT_URL=your_qdrant_url
+QDRANT_API_KEY=your_qdrant_key
+
+# LLM Provider (choose one or more)
+OPENROUTER_API_KEY=your_openrouter_key
+OPENAI_API_KEY=your_openai_key
+HUGGINGFACE_API_KEY=your_hf_key
+
+# Optional: Observability
+COMET_API_KEY=your_comet_key
+OPIK_API_KEY=your_opik_key
 ```
 
-Follow `INSTRUCTIONS.md` for detailed environment variables and service configuration.
-
-## Running Ingestion & Indexing
-
-- Use Prefect flows under `src/pipelines/flows/` to run RSS ingestion and embeddings ingestion.
-- Example (local Prefect):
-
+### Running the API
 ```bash
-# run the RSS ingestion flow
+# Development mode with auto-reload
+uvicorn src.api.main:app --reload --port 8080
+
+# Production mode
+uvicorn src.api.main:app --host 0.0.0.0 --port 8080 --workers 4
+```
+
+API will be available at `http://localhost:8080`
+
+- Interactive docs: `http://localhost:8080/docs`
+- OpenAPI schema: `http://localhost:8080/openapi.json`
+
+### Running Ingestion Pipelines
+```bash
+# RSS ingestion (fetch and store articles)
 python -m src.pipelines.flows.rss_ingestion_flow
 
-# run embeddings ingestion
+# Generate and index embeddings
 python -m src.pipelines.flows.embeddings_ingestion_flow
+
+# Or use Prefect deployment
+prefect deployment run "RSS Ingestion/production"
 ```
+
+### Running the UI
+```bash
+cd frontend
+python app.py
+# Access at http://localhost:7860
+```
+
+---
 
 ## 📁 Project Structure
-
 ```
-substack-newsletters-search-pipeline/
-├── .env.example                 # Environment variables template
-├── .github/                     # GitHub configuration and CI/CD workflows
-├── Dockerfile                   # Dockerfile for FastAPI app
-├── Makefile                     # Automation commands
-├── README.md                    # Project Readme
-├── cloudbuild_fastapi.yaml      # Google Cloud Build config for FastAPI
-├── deploy_fastapi.sh            # Script to deploy FastAPI to Cloud Run
-├── prefect-cloud.yaml           # Prefect Cloud deployment
-├── prefect-local.yaml           # Prefect local deployment
-├── pyproject.toml               # Python dependencies
-├── requirements.txt             # Prefect deployment deps
-├── frontend/                    # Gradio UI
+substack-newsletters-search/
 ├── src/
-│   ├── api/                     # FastAPI application
-│   │   ├── exceptions/          # Error handlers
-│   │   ├── middleware/          # Logging middleware
-│   │   ├── models/              # API schemas
-│   │   ├── routes/              # Endpoint definitions
-│   │   ├── services/            # Business logic
-│   │   └── main.py              # App entry point
-│   ├── config.py                # Centralized settings
-│   ├── configs/                 # Newsletter sources
-│   ├── models/                  # Pydantic/SQLAlchemy models
-│   ├── infrastructure/          # Infrastructure integrations
-│   │   ├── supabase/            # Database setup
-│   │   └── qdrant/              # Vector store setup
-│   ├── pipelines/               # Prefect flows and tasks
-│   │   ├── flows/               # Prefect workflows
-│   │   └── tasks/               # Prefect tasks
-│   └── utils/                   # Logging and text splitter utils
-└── tests/                       # Tests
-    ├── conftest.py              # Pytest configuration
-    ├── integration/             # Integration tests (DB, pipeline)
-    └── unit/                    # Unit tests
+│   ├── api/                          # FastAPI application
+│   │   ├── main.py                   # Application entry point
+│   │   ├── routes/                   # Endpoint definitions
+│   │   │   ├── search.py             # Search endpoints
+│   │   │   └── health.py             # Health check endpoints
+│   │   ├── services/                 # Business logic layer
+│   │   │   ├── search_service.py     # Hybrid search implementation
+│   │   │   ├── generation_service.py # LLM answer generation
+│   │   │   └── providers/            # LLM provider integrations
+│   │   │       ├── openrouter.py     # OpenRouter client
+│   │   │       ├── openai.py         # OpenAI client
+│   │   │       └── huggingface.py    # HuggingFace client
+│   │   ├── models/                   # API schemas (Pydantic)
+│   │   ├── middleware/               # Request/response middleware
+│   │   └── exceptions/               # Custom exception handlers
+│   │
+│   ├── pipelines/                    # Data processing pipelines
+│   │   ├── flows/                    # Prefect workflows
+│   │   │   ├── rss_ingestion_flow.py # RSS fetching and parsing
+│   │   │   └── embeddings_ingestion_flow.py # Embedding generation
+│   │   └── tasks/                    # Reusable Prefect tasks
+│   │       ├── fetch_rss.py          # RSS parsing logic
+│   │       ├── store_articles.py     # Database persistence
+│   │       └── generate_embeddings.py # Embedding creation
+│   │
+│   ├── infrastructure/               # External service integrations
+│   │   ├── qdrant/                   # Vector store client
+│   │   │   ├── qdrant_vectorstore.py # Async Qdrant wrapper
+│   │   │   └── collection_manager.py # Collection operations
+│   │   └── supabase/                 # Database client
+│   │       ├── supabase_client.py    # Async Supabase wrapper
+│   │       └── models.py             # SQLAlchemy models
+│   │
+│   ├── models/                       # Domain models
+│   │   ├── article.py                # Article entity
+│   │   ├── chunk.py                  # Text chunk entity
+│   │   └── search_result.py          # Search result entity
+│   │
+│   ├── utils/                        # Shared utilities
+│   │   ├── logger_util.py            # Structured logging
+│   │   ├── text_splitter.py          # Semantic chunking
+│   │   └── config_loader.py          # Configuration management
+│   │
+│   ├── configs/                      # Configuration files
+│   │   └── newsletter_sources.yaml   # RSS feed definitions
+│   │
+│   └── config.py                     # Centralized settings
+│
+├── frontend/                         # Gradio UI
+│   ├── app.py                        # Gradio interface
+│   └── components/                   # UI components
+│
+├── tests/                            # Test suite
+│   ├── unit/                         # Unit tests
+│   │   ├── test_search_service.py
+│   │   ├── test_generation_service.py
+│   │   └── test_text_splitter.py
+│   ├── integration/                  # Integration tests
+│   │   ├── test_api_endpoints.py
+│   │   ├── test_qdrant_integration.py
+│   │   └── test_pipeline_flows.py
+│   └── conftest.py                   # Pytest configuration
+│
+├── .github/                          # GitHub workflows
+│   └── workflows/
+│       ├── ci.yml                    # Continuous integration
+│       └── deploy.yml                # Deployment automation
+│
+├── Dockerfile                        # Container definition
+├── docker-compose.yml                # Local development stack
+├── cloudbuild_fastapi.yaml           # Google Cloud Build config
+├── deploy_fastapi.sh                 # Cloud Run deployment script
+├── prefect-cloud.yaml                # Prefect Cloud deployment
+├── prefect-local.yaml                # Prefect local deployment
+├── Makefile                          # Development commands
+├── pyproject.toml                    # Project metadata and deps
+├── requirements.txt                  # Python dependencies
+├── .env.example                      # Environment template
+└── README.md                         # This file
 ```
 
 ---
 
-## Deployment
+## 🔧 Development
 
-This project includes deployment resources for containerized deployment (Cloud Run):
+### Common Tasks
+```bash
+# Run tests
+make test                    # All tests
+make test-unit              # Unit tests only
+make test-integration       # Integration tests only
 
-- `Dockerfile`, `cloudbuild_fastapi.yaml`, and `deploy_fastapi.sh` provide an opinionated path to Google Cloud Run.
-- CI/CD workflows (referenced badges) can be adapted to your cloud provider.
+# Code quality
+make lint                   # Run linters
+make format                 # Format code
+make type-check             # Type checking with mypy
 
-## Integrations
+# Development
+make run-api                # Start API server
+make run-ui                 # Start Gradio UI
+make run-pipelines          # Execute ingestion flows
 
-- Qdrant — vector DB for embeddings
-- Supabase/Postgres — persistent storage for articles
-- Prefect — orchestration for ingestion and embedding jobs
-- OpenRouter, OpenAI, Hugging Face — supported LLM providers
-- Gradio — optional demo UI
+# Database
+make db-migrate             # Run migrations
+make db-seed                # Seed test data
+```
 
-## Contributing
+### Adding a New LLM Provider
 
-Contributions are welcome. Please open issues for bugs or feature requests. If you want to contribute code, fork the repo and open a pull request following standard GitHub practices.
+1. Create provider class in `src/api/services/providers/`
+2. Implement `BaseProvider` interface
+3. Register in `src/api/services/generation_service.py`
+4. Add configuration to `src/config.py`
+5. Add tests in `tests/unit/test_providers/`
 
-Recommended workflow:
+Example:
+```python
+from src.api.services.providers.base import BaseProvider
 
-1. Create a topic branch from `main`.
-2. Add tests under `tests/` for new functionality.
-3. Run the test suite and ensure formatting/linting.
-4. Open a PR describing the change.
+class CustomProvider(BaseProvider):
+    async def generate(self, prompt: str, **kwargs) -> str:
+        # Implementation
+        pass
+    
+    async def generate_stream(self, prompt: str, **kwargs):
+        # Streaming implementation
+        pass
+```
 
-## License
+### Code Style
 
-This project is licensed under the MIT License — see the `LICENSE` file for details.
+- Follow PEP 8 guidelines
+- Use type hints throughout
+- Maintain >80% test coverage
+- Document public APIs with docstrings
+- Use async/await for I/O operations
 
 ---
+
+## 📊 API Reference
+
+### Search Endpoint
+
+**POST** `/api/v1/search`
+
+Search for articles using semantic search.
+
+**Request Body:**
+```json
+{
+  "query": "What are the latest trends in AI?",
+  "top_k": 10,
+  "filters": {
+    "author": "Paul Graham",
+    "date_after": "2024-01-01"
+  }
+}
+```
+
+**Response:**
+```json
+{
+  "results": [
+    {
+      "id": "article_123",
+      "title": "The Future of AI",
+      "author": "Paul Graham",
+      "url": "https://example.com/article",
+      "score": 0.95,
+      "content": "...",
+      "published_date": "2024-03-15"
+    }
+  ],
+  "total": 42,
+  "query_time_ms": 125
+}
+```
+
+### Generate Answer Endpoint
+
+**POST** `/api/v1/generate`
+
+Generate an answer using retrieved context.
+
+**Request Body:**
+```json
+{
+  "query": "Summarize the key points about AI safety",
+  "context_ids": ["article_123", "article_456"],
+  "provider": "openrouter",
+  "model": "anthropic/claude-3-opus",
+  "stream": true
+}
+```
+
+**Response (SSE Stream):**
+```
+data: {"type": "token", "content": "Based"}
+data: {"type": "token", "content": " on"}
+data: {"type": "token", "content": " the"}
+...
+data: {"type": "done", "metadata": {"tokens": 156}}
+```
+
+### Health Check
+
+**GET** `/health`
+
+System health status.
+
+**Response:**
+```json
+{
+  "status": "healthy",
+  "services": {
+    "database": "operational",
+    "vector_store": "operational",
+    "llm_provider": "operational"
+  },
+  "version": "1.0.0"
+}
+```
+
+---
+
+## 🚀 Deployment
+
+### Docker Deployment
+```bash
+# Build image
+docker build -t newsletter-search:latest .
+
+# Run container
+docker run -p 8080:8080 \
+  --env-file .env \
+  newsletter-search:latest
+
+# Or use docker-compose
+docker-compose up -d
+```
+
+### Google Cloud Run
+```bash
+# Deploy using provided script
+./deploy_fastapi.sh
+
+# Or use Cloud Build
+gcloud builds submit --config cloudbuild_fastapi.yaml
+
+# Set environment variables
+gcloud run services update newsletter-search \
+  --update-env-vars QDRANT_URL=...,SUPABASE_URL=...
+```
+
+### Kubernetes
+```bash
+# Apply manifests
+kubectl apply -f k8s/
+
+# Or use Helm
+helm install newsletter-search ./charts/newsletter-search \
+  --values values.production.yaml
+```
+
+### Prefect Deployment
+```bash
+# Deploy to Prefect Cloud
+prefect deployment apply prefect-cloud.yaml
+
+# Or local server
+prefect deployment apply prefect-local.yaml
+
+# Schedule ingestion
+prefect deployment run "RSS Ingestion/production" \
+  --param schedule="0 */6 * * *"  # Every 6 hours
+```
+
+---
+
+## 🔌 Integrations
+
+### Qdrant
+- Vector similarity search
+- Payload-based filtering
+- Batch operations
+- Collection management
+
+**Configuration:**
+```python
+QDRANT_URL = "https://your-cluster.qdrant.io"
+QDRANT_API_KEY = "your-api-key"
+QDRANT_COLLECTION = "newsletters"
+```
+
+### Supabase/PostgreSQL
+- Article metadata storage
+- Full-text search
+- User management (optional)
+- Real-time subscriptions
+
+**Schema:**
+```sql
+CREATE TABLE articles (
+  id UUID PRIMARY KEY,
+  title TEXT NOT NULL,
+  content TEXT,
+  author TEXT,
+  url TEXT UNIQUE,
+  published_date TIMESTAMP,
+  created_at TIMESTAMP DEFAULT NOW()
+);
+```
+
+### Prefect
+- Workflow orchestration
+- Scheduled ingestion
+- Task retry logic
+- Observability dashboard
+
+**Example Flow:**
+```python
+@flow(name="RSS Ingestion")
+def ingest_newsletters():
+    feeds = get_feed_urls()
+    articles = fetch_articles(feeds)
+    store_articles(articles)
+    generate_embeddings(articles)
+```
+
+### LLM Providers
+
+**OpenRouter:**
+- Access to 100+ models
+- Unified API interface
+- Cost optimization
+
+**OpenAI:**
+- GPT-4, GPT-3.5
+- Function calling
+- Embeddings
+
+**Hugging Face:**
+- Open-source models
+- Inference API
+- Custom deployments
+
+---
+
+## 🧪 Testing
+```bash
+# Run all tests with coverage
+pytest --cov=src --cov-report=html
+
+# Run specific test categories
+pytest tests/unit/
+pytest tests/integration/
+pytest -m "not slow"  # Skip slow tests
+
+# Run with verbose output
+pytest -v --tb=short
+
+# Generate coverage report
+coverage run -m pytest
+coverage html
+open htmlcov/index.html
+```
+
+### Test Structure
+
+- **Unit Tests**: Isolated component testing with mocks
+- **Integration Tests**: Database and API integration
+- **E2E Tests**: Full pipeline validation
+
+---
+
+## 📈 Monitoring & Observability
+
+### Logging
+- Structured JSON logging
+- Request/response tracing
+- Error tracking with stack traces
+- Performance metrics
+
+### Metrics (Comet ML)
+- Search latency
+- Embedding generation time
+- LLM token usage
+- Pipeline execution stats
+
+### Evaluation (Opik)
+- Answer faithfulness
+- Context relevance
+- Hallucination detection
+- Quality scoring
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome! Please follow these guidelines:
+
+1. **Fork the repository**
+2. **Create a feature branch**: `git checkout -b feature/your-feature`
+3. **Write tests** for new functionality
+4. **Ensure tests pass**: `make test`
+5. **Format code**: `make format`
+6. **Commit changes**: `git commit -m "Add your feature"`
+7. **Push to branch**: `git push origin feature/your-feature`
+8. **Open a Pull Request**
+
+### Development Workflow
+
+- Follow existing code structure and patterns
+- Maintain test coverage above 80%
+- Update documentation for API changes
+- Add type hints to all functions
+- Use descriptive commit messages
+
+---
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+---
+
+## 🙏 Acknowledgments
+
+- Built with [FastAPI](https://fastapi.tiangolo.com/)
+- Vector search powered by [Qdrant](https://qdrant.tech/)
+- Orchestration by [Prefect](https://www.prefect.io/)
+- Database by [Supabase](https://supabase.com/)
+
+---
+
+## 📞 Support
+
+- **Issues**: [GitHub Issues](https://github.com/yourusername/substack-newsletters-search/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/yourusername/substack-newsletters-search/discussions)
+- **Documentation**: See `docs/` directory for detailed guides
+
+---
+
+*Last Updated: November 2025*
