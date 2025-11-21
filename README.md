@@ -25,34 +25,145 @@
 
 </div>
 
-<p align="center">
-  <em>A RAG application for searching articles and getting answers on relevant topics from your favorite Substack newsletters</em>
-</p>
+# Substack Articles Search Engine
 
-## 📚 Table of Contents
+![Diagram](static/app_diagram.png)
 
-- [Substack Articles Search Engine](#substack-articles-search-engine)
-  - [📚 Table of Contents](#-table-of-contents)
-  - [👤 Author](#-author)
-  
-## 👤 Author
+<div align="center">
 
-**Silas Kwabla Gah** | ML Engineer
+[![Status](https://img.shields.io/badge/status-active-success.svg)]
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Python version](https://img.shields.io/badge/python-3.12-3670A0.svg)](https://www.python.org/)
 
-- 🔗 [LinkedIn](https://www.linkedin.com/in/silas-gah-46b126294)
-- 🐙 [GitHub](https://github.com/silsgah)
-- 📧 Email: gahsilas@gmail.com
+</div>
+
+A production-ready Retrieval-Augmented Generation (RAG) project that lets you index, search, and answer questions over Substack (RSS) newsletter articles using semantic search and LLMs.
+
+This repository contains a complete backend for ingestion, indexing, search, and answer generation. It is designed for developers and teams who want a working RAG stack with real-world integrations (Qdrant, Supabase, Prefect, FastAPI) and multi-provider LLM support.
+
+**Goals:**
+- Provide a robust pipeline to ingest and store newsletter articles.
+- Generate and index embeddings for semantic search.
+- Offer REST APIs and an optional Gradio UI for search and question answering.
+- Support multiple LLM providers and streaming/non-streaming responses.
+
+**Quick links:**
+- FastAPI entry: `src/api/main.py`
+- Search logic: `src/api/services/search_service.py`
+- Generation: `src/api/services/generation_service.py`
+- Ingestion & pipelines: `src/pipelines/`
+- Qdrant wrapper: `src/infrastructure/qdrant/qdrant_vectorstore.py`
+
+## Table of Contents
+
+- **Overview**
+- **Architecture & Components**
+- **Getting Started**
+- **Running Locally**
+- **Deployment**
+- **Integrations**
+- **Contributing**
+- **License**
+
+## Overview
+
+This project is an application (not a course). It implements a full RAG stack to:
+
+- Fetch articles from RSS/Substack feeds.
+- Persist raw articles to Postgres (Supabase).
+- Split content into chunks and produce embeddings.
+- Store embeddings and metadata in Qdrant for fast vector search.
+- Expose search endpoints and generate answers using LLMs.
+
+Use cases: personal newsletter search, knowledge bases built from newsletters, research assistants over Substack content, and demo apps for RAG architectures.
+
+## Architecture & Components
+
+- **Ingestion**: Prefect flows in `src/pipelines/flows/` and tasks in `src/pipelines/tasks/` fetch RSS feeds, parse articles, and store them.
+- **Storage**: Article metadata is stored in Supabase/Postgres (`src/infrastructure/supabase/`).
+- **Vector Index**: Qdrant is used to store embeddings and payloads; client wrapper in `src/infrastructure/qdrant/`.
+- **Search**: `src/api/services/search_service.py` performs hybrid dense + sparse queries, filtering and deduplication.
+- **Generation**: `src/api/services/generation_service.py` constructs prompts and calls LLM providers (OpenRouter, OpenAI, Hugging Face) with streaming support.
+- **API**: FastAPI app in `src/api/main.py` exposes `/search` and health endpoints and manages lifecycle (vectorstore init).
+- **UI**: Optional Gradio interface in `frontend/` for interactive demos.
+
+## Getting Started
+
+Prerequisites:
+
+- Python 3.10+ (project lists 3.12 in badges)
+- Qdrant instance (local or hosted)
+- Supabase project or Postgres instance
+- API keys for chosen LLM providers (OpenRouter/OpenAI/Hugging Face)
+
+Quick setup (zsh):
+
+```bash
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+cp .env.example .env   # and fill with your credentials
+```
+
+Start the API (development):
+
+```bash
+uvicorn "src.api.main:app" --reload --port 8080
+```
+
+Follow `INSTRUCTIONS.md` for detailed environment variables and service configuration.
+
+## Running Ingestion & Indexing
+
+- Use Prefect flows under `src/pipelines/flows/` to run RSS ingestion and embeddings ingestion.
+- Example (local Prefect):
+
+```bash
+# run the RSS ingestion flow
+python -m src.pipelines.flows.rss_ingestion_flow
+
+# run embeddings ingestion
+python -m src.pipelines.flows.embeddings_ingestion_flow
+```
+
+## Deployment
+
+This project includes deployment resources for containerized deployment (Cloud Run):
+
+- `Dockerfile`, `cloudbuild_fastapi.yaml`, and `deploy_fastapi.sh` provide an opinionated path to Google Cloud Run.
+- CI/CD workflows (referenced badges) can be adapted to your cloud provider.
+
+## Integrations
+
+- Qdrant — vector DB for embeddings
+- Supabase/Postgres — persistent storage for articles
+- Prefect — orchestration for ingestion and embedding jobs
+- OpenRouter, OpenAI, Hugging Face — supported LLM providers
+- Gradio — optional demo UI
+
+## Contributing
+
+Contributions are welcome. Please open issues for bugs or feature requests. If you want to contribute code, fork the repo and open a pull request following standard GitHub practices.
+
+Recommended workflow:
+
+1. Create a topic branch from `main`.
+2. Add tests under `tests/` for new functionality.
+3. Run the test suite and ensure formatting/linting.
+4. Open a PR describing the change.
+
+## License
+
+This project is licensed under the MIT License — see the `LICENSE` file for details.
 
 ---
-🎯 Project Highlights
-This is a full-stack, production-grade AI system that demonstrates:
 
-✅ Complete ML Pipeline: From raw data ingestion to production deployment
-✅ Advanced RAG Implementation: Query expansion, self-querying, and cross-encoder reranking
-✅ Custom LLM Fine-Tuning: Supervised Fine-Tuning (SFT) + Direct Preference Optimization (DPO)
-✅ Production Infrastructure: Microservices architecture with separate RAG and inference services
-✅ Multi-Cloud Deployment: AWS SageMaker, RunPod, and Render.com support
-✅ Full Observability: Experiment tracking (Comet ML) and prompt monitoring (Opik)
-✅ Clean Architecture: Domain-Driven Design with ~6,000 lines of well-structured code
-✅ CI/CD Pipeline: Automated testing, linting, and deployment workflows
+If you'd like, I can also:
+
+- Extract a short, one-paragraph elevator pitch for the repo.
+- Create a compact `README_LITE.md` for GitHub's main page.
+- Add a small architecture diagram or ASCII overview.
+
+Tell me which of the above you'd prefer next.
+
 
