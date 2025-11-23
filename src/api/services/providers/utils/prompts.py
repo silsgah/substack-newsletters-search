@@ -34,7 +34,7 @@ that is retrieved from a vector database without relying on outside knowledge or
 
 # Create a new prompt
 prompt = opik.Prompt(
-    name="substack_research_assistant", prompt=PROMPT, metadata={"environment": "development"}
+    name="substack_research_assistant_v3", prompt=PROMPT, metadata={"environment": "development"}
 )
 
 
@@ -70,6 +70,7 @@ def build_research_prompt(
         for r in contexts
     )
 
+    # Use the string template directly to avoid Opik placeholder validation issues
     return PROMPT.format(
         query=query,
         context_texts=context_texts,
