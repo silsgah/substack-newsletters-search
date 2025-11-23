@@ -116,6 +116,11 @@ async def ask_with_generation_stream(request: Request, ask: AskRequest):
 
     # Step 3: Wrap streaming generator
     async def stream_generator():
+        # Yield sources as JSON first
+        import json
+        sources_data = [s.model_dump() for s in results]
+        yield json.dumps({"sources": sources_data}) + "\n"
+
         async for delta in stream_func():
             yield delta
             await asyncio.sleep(0)  # allow event loop to handle other tasks

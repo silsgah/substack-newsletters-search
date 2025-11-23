@@ -519,6 +519,44 @@ class AsyncQdrantVectorStore:
             self.logger.error(f"Failed to generate embeddings: {e}")
             raise RuntimeError("Error generating batch embeddings") from e
 
+    async def embed_query_async(
+        self, query_text: str
+    ) -> tuple[list[float], SparseVector]:
+        """Generate dense and sparse embeddings concurrently for a single query.
+
+        Args:
+            query_text (str): Query text to embed.
+
+        Returns:
+            tuple[list[float], SparseVector]: Dense and sparse embeddings.
+
+        Raises:
+            RuntimeError: If embedding generation fails.
+
+        """
+        try:
+            # Run embeddings concurrently in threads
+            dense_task = asyncio.to_thread(self.dense_vectors, [query_text])
+            sparse_task = asyncio.to_thread(
+                self.sparse_model.embed, [query_text], batch_size=1
+            )
+            dense_result, sparse_result = await asyncio.gather(dense_task, sparse_task)
+
+            # Extract single result
+            dense_vec = dense_result[0]
+            if isinstance(dense_vec, np.ndarray):
+                dense_vec = dense_vec.tolist()
+
+            sparse_res = list(sparse_result)[0]
+            sparse_vec = SparseVector(
+                indices=sparse_res.indices.tolist(), values=sparse_res.values.tolist()
+            )
+
+            return dense_vec, sparse_vec
+        except Exception as e:
+            self.logger.error(f"Failed to generate query embeddings: {e}")
+            raise RuntimeError("Error generating query embeddings") from e
+
     async def _article_batch_generator(
         self, session: Session, from_date: datetime | None = None
     ) -> AsyncGenerator[list[SubstackArticle], None]:

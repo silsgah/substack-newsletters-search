@@ -1,16 +1,17 @@
 "use client";
 
-import { Search } from "lucide-react";
+import { Search, X } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 
 interface SearchBarProps {
     onSearch: (query: string) => void;
+    onReset?: () => void;
     isLoading?: boolean;
     className?: string;
 }
 
-export function SearchBar({ onSearch, isLoading, className }: SearchBarProps) {
+export function SearchBar({ onSearch, onReset, isLoading, className }: SearchBarProps) {
     const [query, setQuery] = useState("");
 
     const handleSubmit = (e: React.FormEvent) => {
@@ -18,6 +19,11 @@ export function SearchBar({ onSearch, isLoading, className }: SearchBarProps) {
         if (query.trim()) {
             onSearch(query);
         }
+    };
+
+    const handleReset = () => {
+        setQuery("");
+        onReset?.();
     };
 
     return (
@@ -31,10 +37,21 @@ export function SearchBar({ onSearch, isLoading, className }: SearchBarProps) {
                     value={query}
                     onChange={(e) => setQuery(e.target.value)}
                     placeholder="Ask anything about your newsletters..."
-                    className="block w-full pl-11 pr-4 py-4 bg-white border border-gray-200 rounded-2xl shadow-sm focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all text-lg text-gray-900 placeholder:text-gray-400"
+                    className="block w-full pl-11 pr-32 py-4 bg-white border border-gray-200 rounded-2xl shadow-sm focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all text-lg text-gray-900 placeholder:text-gray-400"
                     disabled={isLoading}
                 />
-                <div className="absolute inset-y-0 right-2 flex items-center">
+                <div className="absolute inset-y-0 right-2 flex items-center gap-2">
+                    {query && (
+                        <button
+                            type="button"
+                            onClick={handleReset}
+                            disabled={isLoading}
+                            className="p-2 text-gray-400 hover:text-gray-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                            title="Clear search"
+                        >
+                            <X className="h-5 w-5" />
+                        </button>
+                    )}
                     <button
                         type="submit"
                         disabled={!query.trim() || isLoading}

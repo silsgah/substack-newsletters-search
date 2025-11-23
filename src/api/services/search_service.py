@@ -45,8 +45,7 @@ async def query_with_filters(
 
     """
     vectorstore: AsyncQdrantVectorStore = request.app.state.vectorstore
-    dense_vector = vectorstore.dense_vectors([query_text])[0]
-    sparse_vector = vectorstore.sparse_vectors([query_text])[0]
+    dense_vector, sparse_vector = await vectorstore.embed_query_async(query_text)
 
     # Build filter conditions
     conditions: list[FieldCondition] = []
@@ -61,7 +60,7 @@ async def query_with_filters(
 
     query_filter = Filter(must=conditions) if conditions else None  # type: ignore
 
-    fetch_limit = max(1, limit) * 100
+    fetch_limit = max(1, limit) * 20
     logger.info(f"Fetching up to {fetch_limit} points for unique Ids.")
 
     response = await vectorstore.client.query_points(
@@ -129,8 +128,7 @@ async def query_unique_titles(
 
     """
     vectorstore: AsyncQdrantVectorStore = request.app.state.vectorstore
-    dense_vector = vectorstore.dense_vectors([query_text])[0]
-    sparse_vector = vectorstore.sparse_vectors([query_text])[0]
+    dense_vector, sparse_vector = await vectorstore.embed_query_async(query_text)
 
     # Build filter conditions
     conditions: list[FieldCondition] = []
@@ -145,7 +143,7 @@ async def query_unique_titles(
 
     query_filter = Filter(must=conditions) if conditions else None  # type: ignore
 
-    fetch_limit = max(1, limit) * 280
+    fetch_limit = max(1, limit) * 50
     logger.info(f"Fetching up to {fetch_limit} points for unique titles.")
 
     response = await vectorstore.client.query_points(

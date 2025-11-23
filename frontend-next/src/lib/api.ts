@@ -52,7 +52,8 @@ export async function askQuestion(params: AskRequest): Promise<AskResponse> {
 
 export async function askQuestionStream(
     params: AskRequest,
-    onChunk: (chunk: string) => void
+    onChunk: (chunk: string) => void,
+    onSources?: (sources: SearchResult[]) => void
 ) {
     try {
         const response = await fetch(`${API_BASE_URL}/search/ask/stream`, {
@@ -69,12 +70,38 @@ export async function askQuestionStream(
 
         const reader = response.body.getReader();
         const decoder = new TextDecoder();
+        let isFirstChunk = true;
+        let buffer = "";
 
         while (true) {
             const { done, value } = await reader.read();
             if (done) break;
             const chunk = decoder.decode(value, { stream: true });
-            onChunk(chunk);
+            buffer += chunk;
+
+            if (isFirstChunk) {
+                const newlineIndex = buffer.indexOf("\n");
+                if (newlineIndex !== -1) {
+                    const jsonLine = buffer.slice(0, newlineIndex);
+                    try {
+                        const data = JSON.parse(jsonLine);
+                        if (data.sources && onSources) {
+                            onSources(data.sources);
+                        }
+                        // Remove the JSON line from buffer
+                        buffer = buffer.slice(newlineIndex + 1);
+                    } catch (e) {
+                        console.warn("Failed to parse sources JSON:", e);
+                    }
+                    isFirstChunk = false;
+                }
+            }
+
+            // If we have processed the first chunk (or it wasn't JSON), stream the rest
+            if (!isFirstChunk && buffer.length > 0) {
+                onChunk(buffer);
+                buffer = "";
+            }
         }
     } catch (error) {
         console.error("Error in askQuestionStream:", error);

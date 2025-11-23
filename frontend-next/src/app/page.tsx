@@ -38,15 +38,8 @@ export default function Home() {
         limit: 5,
       };
 
-      // Launch search for sources
-      const sourcesPromise = searchUniqueTitles(searchParams)
-        .then((res) => {
-          setResults(res.results);
-        })
-        .catch((err) => console.error("Failed to fetch sources", err));
-
-      // Launch answer stream
-      const streamPromise = askQuestionStream(
+      // Launch answer stream (which also returns sources now)
+      await askQuestionStream(
         {
           ...searchParams,
           provider: "OpenRouter", // Default
@@ -54,10 +47,11 @@ export default function Home() {
         },
         (chunk) => {
           setAnswer((prev) => prev + chunk);
+        },
+        (sources) => {
+          setResults(sources);
         }
       );
-
-      await Promise.all([sourcesPromise, streamPromise]);
     } catch (error) {
       console.error("Search failed", error);
       setAnswer("Sorry, something went wrong. Please try again.");
@@ -65,6 +59,14 @@ export default function Home() {
       setIsLoading(false);
       setIsStreaming(false);
     }
+  };
+
+  const handleReset = () => {
+    setQuery("");
+    setResults([]);
+    setAnswer("");
+    setIsStreaming(false);
+    setIsLoading(false);
   };
 
   return (
@@ -79,7 +81,7 @@ export default function Home() {
       </div>
 
       <div className="sticky top-4 z-10 glass-panel rounded-2xl p-2 transition-all duration-200">
-        <SearchBar onSearch={handleSearch} isLoading={isLoading} />
+        <SearchBar onSearch={handleSearch} onReset={handleReset} isLoading={isLoading} />
         <FilterPanel filters={filters} onFilterChange={handleFilterChange} />
       </div>
 

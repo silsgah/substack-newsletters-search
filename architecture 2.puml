@@ -1,0 +1,51 @@
+@startuml
+skinparam componentStyle rectangle
+title Substack Articles Search Engine — Architecture
+actor "RSS / Substack Feeds" as Feeds
+
+package "Ingestion" {
+  [Prefect Flows\n(src/pipelines/flows)] as Prefect
+  [Ingestion Worker\n(parser)] as IngestWorker
+  Feeds --> Prefect
+  Prefect --> IngestWorker
+}
+
+package "Storage & Indexing" {
+  database "Supabase / Postgres\n(src/infrastructure/supabase)" as Postgres
+  component "Text Splitter\n(src/utils/text_splitter.py)" as Splitter
+  component "Embeddings Generator" as EmbGen
+  [Qdrant Vector DB\n(src/infrastructure/qdrant)] as Qdrant
+  IngestWorker --> Postgres
+  IngestWorker --> Splitter
+  Splitter --> EmbGen
+  EmbGen --> Qdrant : embeddings + payloads
+}
+
+package "API & Generation" {
+  component "FastAPI\n(src/api/main.py)" as FastAPI
+  component "Search Service\n(src/api/services/search_service.py)" as SearchSvc
+  component "Generation Service\n(src/api/services/generation_service.py)" as GenSvc
+  FastAPI --> SearchSvc
+  FastAPI --> GenSvc
+  SearchSvc --> Qdrant : query (dense+sparse)
+  GenSvc --> SearchSvc : contexts
+}
+
+package "LLM Providers" {
+  node "OpenRouter" as OR
+  node "OpenAI" as OA
+  node "Hugging Face" as HF
+  GenSvc --> OR
+  GenSvc --> OA
+  GenSvc --> HF
+}
+
+node "Gradio UI\n(frontend/)" as Gradio
+Gradio --> FastAPI
+
+node "Deployment / CI\nDocker, Cloud Run" as CI
+CI --> FastAPI
+CI --> Prefect
+CI --> Qdrant
+
+@enduml
