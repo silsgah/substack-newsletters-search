@@ -3,7 +3,6 @@
 <div align="center">
 
 ![System Architecture](substacknewsletter.png)
-![System Architecture](TrimedVersion.mov)
 [![Status](https://img.shields.io/badge/status-active-success.svg)]()
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.12](https://img.shields.io/badge/python-3.12-3670A0.svg)](https://www.python.org/)
